@@ -35,7 +35,7 @@ import rticonnextdds_connector as rti
 logger = init_logger()
 with rti.open_connector(
         config_name="MyParticipantLibrary::CentralServerParticipant",
-        url=file_path + "/../VitalSigns.xml") as connector:
+        url=file_path + "/VitalSigns.xml") as connector:
 
     input = connector.get_input("CentralServerSubscriber::VitalSign")
     output = connector.get_output("CentralServerPublisher::VitalSign")

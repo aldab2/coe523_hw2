@@ -19,7 +19,7 @@ import rticonnextdds_connector as rti
 
 with rti.open_connector(
         config_name="MyParticipantLibrary::HealthcareProviderParticipant",
-        url=file_path + "/../VitalSigns.xml") as connector:
+        url=file_path + "/VitalSigns.xml") as connector:
 
     input = connector.get_input("HealthcareProviderSubscriber::VitalSign")
 

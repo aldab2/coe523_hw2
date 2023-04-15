@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!--
+(c) 2005-2015 Copyright, Real-Time Innovations.  All rights reserved.
+No duplications, whole or partial, manual or electronic, may be made
+without express written permission.  Any such copies, or revisions thereof,
+must display this notice unaltered.
+This code contains trade secrets of Real-Time Innovations, Inc.
+ -->
+
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/current/rti_dds_qos_profiles.xsd">
+
+    <!-- Qos Library -->
+    <qos_library name="QosLibrary">
+        <qos_profile name="DefaultProfile"
+            base_name="BuiltinQosLib::Generic.StrictReliable"
+            is_default_qos="true">
+            <domain_participant_qos>
+                <participant_name>
+                    <name>Connector Shape Example</name>
+                </participant_name>
+            </domain_participant_qos>
+
+            <datawriter_qos>
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+
+                <history>
+                    <kind>KEEP_ALL_HISTORY_QOS</kind>
+                </history>
+                <durability>
+                    <kind>PERSISTENT_DURABILITY_QOS</kind>
+                </durability>
+            </datawriter_qos>
+
+            <datareader_qos> 
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+                <history>
+                    <kind>KEEP_ALL_HISTORY_QOS</kind>
+                </history>
+                <durability>
+                    <kind>PERSISTENT_DURABILITY_QOS</kind>
+                </durability>
+            </datareader_qos> 
+        </qos_profile>
+    </qos_library>
+
+    <!-- types -->
+    <types>
+        <struct name="VitalSign" extensibility="extensible">
+            <member name="hr" type="long" />
+            <member name="bp" type="long" />
+            <member name="o" type="long" />
+            <member name="id" type="long" />
+            <member name="count" type="long" />
+            <member name="timestamp" type="long" />
+        </struct>
+    </types>
+
+    <!-- Domain Library -->
+    <domain_library name="MyDomainLibrary">
+        <domain name="MyDomain" domain_id="0">
+            <register_type name="VitalSign" type_ref="VitalSign" />
+            <topic name="SensorVitalSign" register_type_ref="VitalSign" />
+            <topic name="CentralServerVitalSign" register_type_ref="VitalSign" />
+
+
+        </domain>
+    </domain_library>
+
+    <!-- Participant library -->
+    <domain_participant_library name="MyParticipantLibrary">
+        <domain_participant name="SensorParticipant" domain_ref="MyDomainLibrary::MyDomain">
+            <publisher name="SensorPublisher">
+                <data_writer name="VitalSign" topic_ref="SensorVitalSign" />
+            </publisher>
+        </domain_participant>
+
+        <!-- You can also define the reader and writer inside the same
+            connector instance if you plan to use both in the same application.
+        -->
+        <domain_participant name="CentralServerParticipant" domain_ref="MyDomainLibrary::MyDomain">
+            <publisher name="CentralServerPublisher">
+                <data_writer name="VitalSign" topic_ref="CentralServerVitalSign" />
+            </publisher>
+            <subscriber name="CentralServerSubscriber">
+                <data_reader name="VitalSign" topic_ref="SensorVitalSign" />
+            </subscriber>
+        </domain_participant>
+
+
+        <!-- We use separate participants because we run the writer and the reader
+            on different applications, and wouldn't want to create the reader
+            in writer.py, or the writer in reader.py -->
+        <domain_participant name="HealthcareProviderParticipant" domain_ref="MyDomainLibrary::MyDomain">
+            <subscriber name="HealthcareProviderSubscriber">
+                <data_reader name="VitalSign" topic_ref="CentralServerVitalSign" >
+                <filter name="bp" kind="builtin.sql" >
+                    <expression> id = 1 AND  bp  &gt; 60 AND  hr  &gt; 60 AND o  &gt; 60   </expression>
+                </filter>
+                
+                </data_reader>
+            </subscriber>
+        </domain_participant>
+
+
+    </domain_participant_library>
+</dds>

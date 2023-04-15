@@ -27,7 +27,7 @@ id = int(argv[1])
 
 with rti.open_connector(
         config_name="MyParticipantLibrary::SensorParticipant",
-        url=file_path + "/../VitalSigns.xml") as connector:
+        url=file_path + "/VitalSigns.xml") as connector:
 
     output = connector.get_output("SensorPublisher::VitalSign")
 

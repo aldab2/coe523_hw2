@@ -31,11 +31,7 @@ with rti.open_connector(
 
     output = connector.get_output("SensorPublisher::VitalSign")
 
-    print("Waiting for subscriptions...")
-    output.wait_for_subscriptions()
-
-    print("Writing...")
-    i=0
+    i = 1
     while True:
         output.instance.set_number("hr",randint(60,100))
         output.instance.set_number("bp", randint(60,140))
@@ -43,6 +39,8 @@ with rti.open_connector(
         output.instance.set_number("id", id)
         output.instance.set_number("count", i)
         output.instance.set_number("timestamp",time.time())
+        
+        print("Writing record ", i)
         output.write()
 
         sleep(0.5) # Write at a rate of one sample every 0.5 seconds, for ex.

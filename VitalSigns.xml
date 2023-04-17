@@ -99,7 +99,7 @@ This code contains trade secrets of Real-Time Innovations, Inc.
             <subscriber name="HealthcareProviderSubscriber">
                 <data_reader name="VitalSign" topic_ref="CentralServerVitalSign" >
                 <filter name="bp" kind="builtin.sql" >
-                    <expression> id = 1 AND  bp  &gt; 60 AND  hr  &gt; 60 AND o  &gt; 60   </expression>
+                    <expression>bp  &gt; 60 AND  hr  &gt; 60 AND o  &gt; 60   </expression>
                 </filter>
                 
                 </data_reader>

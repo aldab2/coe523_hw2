@@ -12,6 +12,11 @@ from sys import path as sys_path
 from os import path as os_path
 import logging
 from logging.handlers import TimedRotatingFileHandler
+import sqlite3
+conn = sqlite3.connect("readings.db")
+c = conn.cursor()
+c.execute('create table if not EXISTS READINGS (id int, hr int, bp int, o int, count int, timestamp int)')
+conn.commit()
 
 def init_logger():
     logger = logging.getLogger("sensor_data.log")
@@ -48,6 +53,8 @@ with rti.open_connector(
         for sample in input.samples.valid_data_iter:
             data : dict() = sample.get_dictionary()
             logger.info(str(data))
+            c.execute('insert into READINGS VALUES (' + str(data['id']) + ',' + str(data['hr']) + ',' + str(data['bp']) + ',' + str(data['o']) + ',' + str(data['count'])  + ',' + str(data['timestamp']) + ')')
+            conn.commit()
             print("Reveiced {}".format(str(data)))
             output.instance.set_dictionary(data)
             output.write()

@@ -25,7 +25,7 @@ conn.commit()
 #         c.execute('insert into READINGS VALUES (' + str(sample) + ',' + str(sample) + ',' + str(sample)  + ',' +str(sample)   + ',' + str(sample)   + ',' + str(sample)  + ')')
 #         conn.commit()
 
-conn = sqlite3.connect('example.db')
+conn = sqlite3.connect('readings.db')
 c = conn.cursor()
 x = c.execute("select * from READINGS")
 a = x.fetchall()
